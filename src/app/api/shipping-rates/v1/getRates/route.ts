@@ -1,4 +1,4 @@
-export async function POST(request: Request) {
+async function handler(request: Request) {
   const input = await request.json();
 
   console.log('Shipping rates input: ', input);
@@ -45,4 +45,14 @@ export async function POST(request: Request) {
   };
 
   return Response.json(data);
+}
+
+export async function POST(request: Request) {
+  console.info('Shipping rates::POST - called');
+  return handler(request);
+}
+
+export async function GET(request: Request) {
+  console.info('Shipping rates::GET - called');
+  return handler(request);
 }
