@@ -49,6 +49,6 @@ For more information, see [How to Deploy Next.js Sites to Netlify](https://www.n
 
 ##### Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/project?template=https://github.com/carmelc/dev-center-template-fullfilment-app)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?s=https://github.com/carmelc/dev-center-template-fullfilment-app)
 
 For more information, see [How to Deploy Next.js Sites to Vercel](https://vercel.com/docs/frameworks/nextjs)
