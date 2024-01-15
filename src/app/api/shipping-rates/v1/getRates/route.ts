@@ -45,7 +45,7 @@ async function handler(request: Request) {
 
 export async function POST(request: Request) {
   console.info('Shipping rates::POST - called');
-  const input = await request.json();
+  const input = await request.text();
   console.log('Shipping rates input: ', input);
   return handler(request);
 }
