@@ -1,8 +1,4 @@
 async function handler(request: Request) {
-  const input = await request.json();
-
-  console.log('Shipping rates input: ', input);
-
   const data = {
     shippingRates: [
       {
@@ -49,6 +45,8 @@ async function handler(request: Request) {
 
 export async function POST(request: Request) {
   console.info('Shipping rates::POST - called');
+  const input = await request.json();
+  console.log('Shipping rates input: ', input);
   return handler(request);
 }
 
