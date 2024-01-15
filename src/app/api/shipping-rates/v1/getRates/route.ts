@@ -1,24 +1,28 @@
-async function handler(request: Request) {
+
+export async function POST(request: Request) {
+  console.info('Shipping rates::POST - called');
+  const input = await request.text();
+  console.log('Shipping rates input: ', input);
   const data = {
     shippingRates: [
-      {
-        code: 'example-shipping-rate',
-        title: 'Example Shipping Rate',
-        logistics: {
-          deliveryTime: '2-5 days'
-        },
-        cost: {
-          price: '15',
-          currency: 'USD',
-          additionalCharges: [
-            {
-              price: '10',
-              type: 'HANDLING_FEE',
-              details: 'Handling fee of $10 applied for fragile items.'
-            }
-          ]
-        }
-      },
+      // {
+      //   code: 'example-shipping-rate',
+      //   title: 'Example Shipping Rate',
+      //   logistics: {
+      //     deliveryTime: '2-5 days'
+      //   },
+      //   cost: {
+      //     price: '15',
+      //     currency: 'USD',
+      //     additionalCharges: [
+      //       {
+      //         price: '10',
+      //         type: 'HANDLING_FEE',
+      //         details: 'Handling fee of $10 applied for fragile items.'
+      //       }
+      //     ]
+      //   }
+      // },
       {
         code: 'example-shipping-rate-premium',
         title: 'Example Shipping Rate Premium',
@@ -41,16 +45,4 @@ async function handler(request: Request) {
   };
 
   return Response.json(data);
-}
-
-export async function POST(request: Request) {
-  console.info('Shipping rates::POST - called');
-  const input = await request.text();
-  console.log('Shipping rates input: ', input);
-  return handler(request);
-}
-
-export async function GET(request: Request) {
-  console.info('Shipping rates::GET - called');
-  return handler(request);
 }
