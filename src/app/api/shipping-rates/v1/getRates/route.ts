@@ -1,6 +1,6 @@
 import {parseJwt} from "@/app/utils/jwt-verify";
 import {ChargeType, GetShippingRatesData, GetShippingRatesResponse} from "@/app/types/shipping-provider-spi";
-
+import {calculatePrice} from "@/app/utils/shipping-calculator";
 export async function POST(request: Request) {
   console.info('Shipping rates::POST - called');
   const jwtPayload = await request.text();
@@ -10,10 +10,7 @@ export async function POST(request: Request) {
 
   const currency = input.metadata.currency;
 
-  // first product 5$, second product 2$, each additional product 1$
-  const shippingPrice = input.request.lineItems?.reduce((acc, lineItem, index) => {
-    return acc + index === 0 ? 5 : index === 1 ? 2 : 1;
-  }, 0) ?? 0;
+  const shippingPrice = calculatePrice(input.request);
 
   // return the shipping rates, in this case it is static
   const data: GetShippingRatesResponse = {

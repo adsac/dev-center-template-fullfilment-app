@@ -481,8 +481,6 @@ export interface IdentificationDataIdOneOf {
   /** ID of an app. */
   appId?: string;
 }
-
-
 export interface GetShippingRatesMetadata {
   instanceId: string;
   languages: string[];
