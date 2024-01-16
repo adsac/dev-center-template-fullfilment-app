@@ -8,4 +8,8 @@ export async function POST(request: NextRequest) {
   // verify the data was not tampered with, and get the input
   const input = parseJwt<any>(jwtPayload, false)!;
   console.info('Webhook::install - input is', input);
+
+  return new Response('OK', {
+    status: 200,
+  });
 }
