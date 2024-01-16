@@ -16,7 +16,7 @@ const parseJwtKeyIfEncoded = (secretOrPublicKey: string): string => {
     }
 }
 
-export const parseJwt = (token: string, verifyCallerClaims = false): object | null => {
+export const parseJwt = <T = any>(token: string, verifyCallerClaims = false): T | null => {
   const secretKey = process.env.WIX_APP_JWT_KEY;
   if (!token || !secretKey) {
     throw new Error('parseJwt:Missing token or secret key');
