@@ -15,10 +15,10 @@ export async function GET(request: NextRequest) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      grant_type: "authorization_code",
+      grant_type: 'authorization_code',
       client_id: process.env.WIX_APP_ID,
       client_secret: process.env.WIX_APP_SECRET_KEY,
-      code
+      code,
     }),
   });
 
@@ -27,11 +27,12 @@ export async function GET(request: NextRequest) {
   const appInstanceRes = await fetch('https://www.wixapis.com/apps/v1/instance', {
     method: 'GET',
     headers: {
-      'Authorization': accessToken,
-    }
+      Authorization: accessToken,
+    },
   });
 
-  const appInstance: { instance: Record<string, any> & { instanceId: string }, site: Record<string, any> } = await appInstanceRes.json();
+  const appInstance: { instance: Record<string, any> & { instanceId: string }; site: Record<string, any> } =
+    await appInstanceRes.json();
 
   const instanceId = appInstance.instance.instanceId;
 
@@ -40,7 +41,6 @@ export async function GET(request: NextRequest) {
   // see: https://dev.wix.com/docs/rest/articles/getting-started/authentication
 
   console.log('received oauth refresh and access tokens - ', { accessToken, refreshToken, instanceId });
-
 
   return redirect(`https://www.wix.com/installer/close-window?access_token=${accessToken}`);
 }

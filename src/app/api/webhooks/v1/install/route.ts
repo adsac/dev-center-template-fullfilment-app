@@ -1,5 +1,5 @@
 import { type NextRequest } from 'next/server';
-import {parseJwt} from "@/app/utils/jwt-verify";
+import { parseJwt } from '@/app/utils/jwt-verify';
 
 export async function POST(request: NextRequest) {
   console.info('Webhook::install - called');

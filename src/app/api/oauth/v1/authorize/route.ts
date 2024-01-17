@@ -18,11 +18,9 @@ export async function GET(request: NextRequest) {
 
   console.log('Base path is: ', baseUrl);
 
-  return redirect(`https://www.wix.com/installer/install?token=${
-      token
-    }&state=${
-      JSON.stringify(stateObject)
-    }&redirectUrl=${
-      `${baseUrl}/api/oauth/v1/signup`
-    }&appId=${process.env.WIX_APP_ID}`);
+  return redirect(
+    `https://www.wix.com/installer/install?token=${token}&state=${JSON.stringify(
+      stateObject,
+    )}&redirectUrl=${`${baseUrl}/api/oauth/v1/signup`}&appId=${process.env.WIX_APP_ID}`,
+  );
 }

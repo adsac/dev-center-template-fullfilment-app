@@ -1,6 +1,7 @@
-import {parseJwt} from "@/app/utils/jwt-verify";
-import {ChargeType, GetShippingRatesData, GetShippingRatesResponse} from "@/app/types/shipping-provider-spi";
-import {calculatePrice} from "@/app/utils/shipping-calculator";
+import { parseJwt } from '@/app/utils/jwt-verify';
+import { ChargeType, GetShippingRatesData, GetShippingRatesResponse } from '@/app/types/shipping-provider-spi';
+import { calculatePrice } from '@/app/utils/shipping-calculator';
+
 export async function POST(request: Request) {
   console.info('Shipping rates::POST - called');
   const jwtPayload = await request.text();
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
         code: 'example-shipping-rate',
         title: 'Example Shipping Rate',
         logistics: {
-          deliveryTime: '3-7 days'
+          deliveryTime: '3-7 days',
         },
         cost: {
           price: `${shippingPrice}`,
@@ -28,16 +29,16 @@ export async function POST(request: Request) {
             {
               price: '10',
               type: ChargeType.HANDLING_FEE,
-              details: 'Handling fee of $10 applied for fragile items.'
-            }
-          ]
-        }
+              details: 'Handling fee of $10 applied for fragile items.',
+            },
+          ],
+        },
       },
       {
         code: 'example-shipping-rate-premium',
         title: 'Example Shipping Rate Premium',
         logistics: {
-          deliveryTime: '1-2 days'
+          deliveryTime: '1-2 days',
         },
         cost: {
           price: `${shippingPrice * 2}`,
@@ -46,12 +47,12 @@ export async function POST(request: Request) {
             {
               price: '12',
               type: ChargeType.HANDLING_FEE,
-              details: 'Handling fee of $12 applied for fragile items.'
-            }
-          ]
-        }
-      }
-    ]
+              details: 'Handling fee of $12 applied for fragile items.',
+            },
+          ],
+        },
+      },
+    ],
   };
 
   return Response.json(data);

@@ -1,5 +1,5 @@
-import {NextRequest} from "next/server";
-import {parseJwt} from "@/app/utils/jwt-verify";
+import { NextRequest } from 'next/server';
+import { parseJwt } from '@/app/utils/jwt-verify';
 
 export async function POST(request: NextRequest) {
   console.info('Webhook::uninstall - called');
