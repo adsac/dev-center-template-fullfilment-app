@@ -2,10 +2,12 @@
 import { Page, Layout, Cell, Card, Box, WixDesignSystemProvider, Button } from '@wix/design-system';
 
 import '@wix/design-system/styles.global.css';
-import { useDashboard } from '@/app/utils/wix-client';
+import { useSDK } from '@/app/utils/wix-client';
 
 export const DashboardContent = () => {
-  const { showToast } = useDashboard();
+  const {
+    dashboard: { showToast },
+  } = useSDK();
   return (
     <WixDesignSystemProvider>
       <Page height='100vh'>
