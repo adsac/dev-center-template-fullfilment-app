@@ -1,5 +1,8 @@
-import { DashboardContent } from '@/app/dashboard/content';
+import { ShippingRatesPageContent } from '@/app/dashboard/ShippingRatesPageContent';
+import { getOrders } from '@/app/actions/orders';
 
-export default function App() {
-  return <DashboardContent />;
+export default async function App() {
+  const orders = await getOrders();
+  console.log('orders', orders);
+  return <ShippingRatesPageContent />;
 }

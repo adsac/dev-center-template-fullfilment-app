@@ -183,7 +183,7 @@ export interface Subdivision {
    */
   type?: SubdivisionType;
   /**
-   * Free text description of subdivision type.
+   * Free text description of subdivision methodType.
    * @internal
    */
   typeInfo?: string | null;
@@ -201,7 +201,7 @@ export enum SubdivisionType {
   ADMINISTRATIVE_AREA_LEVEL_4 = 'ADMINISTRATIVE_AREA_LEVEL_4',
   /** Street/block */
   ADMINISTRATIVE_AREA_LEVEL_5 = 'ADMINISTRATIVE_AREA_LEVEL_5',
-  /** ADMINISTRATIVE_AREA_LEVEL_0. Indicates the national political entity, and is typically the highest order type returned by the Geocoder. */
+  /** ADMINISTRATIVE_AREA_LEVEL_0. Indicates the national political entity, and is typically the highest order methodType returned by the Geocoder. */
   COUNTRY = 'COUNTRY',
 }
 
@@ -230,7 +230,7 @@ export interface VatId {
   /** Customer's tax ID. */
   id?: string;
   /**
-   * Tax type.
+   * Tax methodType.
    *
    * Supported values:
    * + `CPF`: for individual tax payers
@@ -331,7 +331,7 @@ export interface ShippingPrice {
 }
 
 export interface AdditionalCharge {
-  /** Additional charge type. */
+  /** Additional charge methodType. */
   type?: ChargeType;
   /** Details of the additional charge. For example, `"Handling fee of $5 applied for gift wrapping"`. */
   details?: string | null;
@@ -441,7 +441,7 @@ export interface Context {
   requestId?: string | null;
   /** 3 capital letters string representing a currency according to ISO-4217 */
   currency?: string | null;
-  /** The identification type and identity data */
+  /** The identification methodType and identity data */
   identity?: IdentificationData;
   /** A string representing a language and region in the format of "xx-XX". First 2 letters represent the language code according to ISO 639-1. This is followed by a dash "-", and then a by 2 capital letters representing the region according to ISO 3166-2 */
   languages?: string[];
