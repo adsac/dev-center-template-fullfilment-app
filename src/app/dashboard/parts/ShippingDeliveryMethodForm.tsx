@@ -36,7 +36,7 @@ export function ShippingDeliveryMethodForm({
       <Collapse open={isOpen}>
         <Card.Divider />
         <Card.Content>
-          <Box direction='vertical' gap='20px'>
+          <Box direction='vertical' gap='SP7'>
             <FormField label='Parameter'>
               <Dropdown
                 selectedId={unitOfMeasure}
@@ -52,8 +52,8 @@ export function ShippingDeliveryMethodForm({
               />
             </FormField>
 
-            <Box direction='vertical' gap='10px'>
-              <Text weight='bold'>Set conditions:</Text>
+            <Box direction='vertical' gap='SP4'>
+              <Text>Set conditions:</Text>
               <Layout>
                 <Cell span={4}>
                   <FormField label={`First ${uomName}`}>

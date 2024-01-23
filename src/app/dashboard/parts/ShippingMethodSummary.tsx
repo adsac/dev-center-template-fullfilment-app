@@ -52,7 +52,7 @@ export function ShippingMethodSummary({ orders }: { orders?: OrderSummary[] }) {
             No orders found
           </Text>
         )}
-        <Box align='right' paddingTop='SP2'>
+        <Box align='right' paddingTop='SP1'>
           <TextButton onClick={() => navigate(ORDERS_PAGE_ID)} size='small' suffixIcon={<ArrowRight />}>
             Go to all orders
           </TextButton>
