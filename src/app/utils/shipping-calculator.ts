@@ -6,6 +6,7 @@ export function calculatePrice(
   shippingCosts: ShippingCosts,
   unitOfMeasure: ShippingUnitOfMeasure,
 ): number {
+  console.log('calculatePrice::', request.lineItems?.[0], shippingCosts, unitOfMeasure);
   const units =
     request.lineItems?.reduce((acc, lineItem) => {
       return acc + lineItemUnit(lineItem, unitOfMeasure, request.weightUnit);
@@ -19,12 +20,12 @@ export function calculatePrice(
   const secondItemCost = shippingCosts.second;
   const additionalItemCost = shippingCosts.thirdAndUp;
 
-  if (units === 1) {
+  if (units <= 1) {
     return firstItemCost;
-  } else if (units === 2) {
+  } else if (units <= 2) {
     return firstItemCost + secondItemCost;
   } else {
-    return firstItemCost + secondItemCost + (units - 2) * additionalItemCost;
+    return firstItemCost + secondItemCost + Math.ceil(units - 2) * additionalItemCost;
   }
 }
 
@@ -33,7 +34,7 @@ const toPounds = (amount: number, weightUnit?: WeightUnit) => amount * (weightUn
 const lineItemUnit = (lineItem: ProductItem, unitOfMeasure: ShippingUnitOfMeasure, weightUnit?: WeightUnit) =>
   (lineItem.quantity ?? 1) *
   (unitOfMeasure === ShippingUnitOfMeasure.WEIGHT_IN_KG
-    ? toKilograms(lineItem?.physicalProperties?.weight ?? 1, weightUnit)
+    ? toKilograms(lineItem?.physicalProperties?.weight || 1, weightUnit)
     : unitOfMeasure === ShippingUnitOfMeasure.WEIGHT_IN_LB
-      ? toPounds(lineItem?.physicalProperties?.weight ?? 1, weightUnit)
+      ? toPounds(lineItem?.physicalProperties?.weight || 1, weightUnit)
       : 1);
