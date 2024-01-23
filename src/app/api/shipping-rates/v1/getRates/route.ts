@@ -7,10 +7,10 @@ export async function POST(request: Request) {
   console.info('Shipping rates::POST - called');
   const [jwtPayload, appData] = await Promise.all([request.text(), getShippingAppData()]);
 
+  console.log('Shipping rates::POST - input: ', jwtPayload);
+
   // verify the data was not tampered with, and get the input
   const input = parseJwt<GetShippingRatesData>(jwtPayload, true)!;
-
-  console.log('Shipping rates::POST - input: ', input);
 
   const currency = input.metadata.currency;
 
