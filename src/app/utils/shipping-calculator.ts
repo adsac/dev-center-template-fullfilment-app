@@ -6,7 +6,6 @@ export function calculatePrice(
   shippingCosts: ShippingCosts,
   unitOfMeasure: ShippingUnitOfMeasure,
 ): number {
-  console.log('calculatePrice::', request.lineItems?.[0], shippingCosts, unitOfMeasure);
   const units =
     request.lineItems?.reduce((acc, lineItem) => {
       return acc + lineItemUnit(lineItem, unitOfMeasure, request.weightUnit);
