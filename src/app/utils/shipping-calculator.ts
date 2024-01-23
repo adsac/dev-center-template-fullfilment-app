@@ -1,25 +1,39 @@
-import { GetShippingRatesRequest } from '@/app/types/shipping-provider-spi';
+import { GetShippingRatesRequest, ProductItem, WeightUnit } from '@/app/types/shipping-provider-spi';
+import { ShippingCosts, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
 
-export function calculatePrice(request: GetShippingRatesRequest) {
-  // first product 5$, second product 2$, each additional product 1$
-  const numOfItems =
+export function calculatePrice(
+  request: GetShippingRatesRequest,
+  shippingCosts: ShippingCosts,
+  unitOfMeasure: ShippingUnitOfMeasure,
+): number {
+  const units =
     request.lineItems?.reduce((acc, lineItem) => {
-      return acc + (lineItem.quantity ?? 1);
+      return acc + lineItemUnit(lineItem, unitOfMeasure, request.weightUnit);
     }, 0) ?? 0;
 
-  if (numOfItems <= 0) {
+  if (units <= 0) {
     return 0; // Return 0 for invalid item counts
   }
-  // Calculate the price based on the specified rule
-  const firstItemCost = 5;
-  const secondItemCost = 2;
-  const additionalItemCost = 1;
+  // Calculate the totalPrice based on the specified rule
+  const firstItemCost = shippingCosts.first;
+  const secondItemCost = shippingCosts.second;
+  const additionalItemCost = shippingCosts.thirdAndUp;
 
-  if (numOfItems === 1) {
+  if (units === 1) {
     return firstItemCost;
-  } else if (numOfItems === 2) {
+  } else if (units === 2) {
     return firstItemCost + secondItemCost;
   } else {
-    return firstItemCost + secondItemCost + (numOfItems - 2) * additionalItemCost;
+    return firstItemCost + secondItemCost + (units - 2) * additionalItemCost;
   }
 }
+
+const toKilograms = (amount: number, weightUnit?: WeightUnit) => amount * (weightUnit === WeightUnit.LB ? 0.453592 : 1);
+const toPounds = (amount: number, weightUnit?: WeightUnit) => amount * (weightUnit === WeightUnit.KG ? 2.20462 : 1);
+const lineItemUnit = (lineItem: ProductItem, unitOfMeasure: ShippingUnitOfMeasure, weightUnit?: WeightUnit) =>
+  (lineItem.quantity ?? 1) *
+  (unitOfMeasure === ShippingUnitOfMeasure.WEIGHT_IN_KG
+    ? toKilograms(lineItem?.physicalProperties?.weight ?? 1, weightUnit)
+    : unitOfMeasure === ShippingUnitOfMeasure.WEIGHT_IN_LB
+      ? toPounds(lineItem?.physicalProperties?.weight ?? 1, weightUnit)
+      : 1);

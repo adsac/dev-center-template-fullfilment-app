@@ -2,8 +2,7 @@
 
 import { createClient } from '@wix/sdk';
 import { headers } from 'next/headers';
-import { orders } from '@wix/ecom';
-
+import { items } from '@wix/data';
 // this should only be used in server components
 export const createSdk = () =>
   createClient({
@@ -13,6 +12,6 @@ export const createSdk = () =>
       }),
     },
     modules: {
-      orders,
+      items,
     },
   });

@@ -46,11 +46,11 @@ export interface ProductItem {
    * @internal
    */
   shippingGroupId?: string | null;
-  /** Total line item price before discounts. */
+  /** Total line item totalPrice before discounts. */
   totalPriceBeforeDiscount?: string | null;
   /** Price of a single item before discounts. */
   priceBeforeDiscount?: string | null;
-  /** Total line item price after discounts. This is equal to `price` multiplied by `quantity`. */
+  /** Total line item totalPrice after discounts. This is equal to `totalPrice` multiplied by `quantity`. */
   totalPrice?: string | null;
   /**
    * For delivery rates by delivery profile id
@@ -61,7 +61,7 @@ export interface ProductItem {
   deliveryDestinationIndex?: number | null;
   /** where the item is delivered from index in the from addresses list */
   deliveryOriginIndex?: number | null;
-  /** whether tax is included in line item price */
+  /** whether tax is included in line item totalPrice */
   taxIncludedInPrice?: boolean | null;
 }
 
@@ -322,9 +322,9 @@ export interface DeliveryTimeSlot {
 }
 
 export interface ShippingPrice {
-  /** The shipping rate's price. Must align with the [currency's decimal separator](https://en.wikipedia.org/wiki/ISO_4217#Active_codes). */
+  /** The shipping rate's totalPrice. Must align with the [currency's decimal separator](https://en.wikipedia.org/wiki/ISO_4217#Active_codes). */
   price?: string;
-  /** Currency of the shipping rate price as a 3-letter [ISO-4217 currency code](https://en.wikipedia.org/wiki/ISO_4217). Must align with the `currency` passed to the function under the `metadata` field. */
+  /** Currency of the shipping rate totalPrice as a 3-letter [ISO-4217 currency code](https://en.wikipedia.org/wiki/ISO_4217). Must align with the `currency` passed to the function under the `metadata` field. */
   currency?: string;
   /** Additional costs. For example, a handling fee for packaging fragile items. */
   additionalCharges?: AdditionalCharge[];

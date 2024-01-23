@@ -10,19 +10,17 @@ export async function middleware(request: NextRequest) {
       method: 'POST',
       body: JSON.stringify({ otp }),
     });
-    console.log(
-      '\x1b[33m*** status:',
-      accessTokenRes.status,
-      '\x1b[0m - ',
-      await accessTokenRes.json(),
-      ' request id is: \x1b[32m',
-      accessTokenRes.headers.get('x-wix-request-id'),
-      '\x1b[0m',
-      '\x1b[33m*** authorization before:',
-      headers.get('Authorization'),
-      '\x1b[0m - ',
-    );
-    headers.set('Authorization', '');
+    if (accessTokenRes.status === 200) {
+      const tokens = await accessTokenRes.json();
+      headers.set('Authorization', tokens.accessToken);
+    } else {
+      console.error(
+        '*** Failed to create access token from authorizationCode status:',
+        accessTokenRes.status,
+        ' request id is: ',
+        accessTokenRes.headers.get('x-wix-request-id'),
+      );
+    }
   }
   return NextResponse.next({
     headers,

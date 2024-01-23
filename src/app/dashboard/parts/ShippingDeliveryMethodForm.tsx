@@ -1,8 +1,8 @@
-import { ShippingCosts, ShippingMethodType, ShippingUnitOfMeasure } from '@/app/dashboard/types';
 import { useSDK } from '@/app/utils/wix-sdk.client';
 import { useState } from 'react';
 import { Box, Card, Cell, Collapse, Dropdown, FormField, Input, Layout, Text, TextButton } from '@wix/design-system';
 import { ChevronDown, ChevronUp } from '@wix/wix-ui-icons-common';
+import { ShippingCosts, ShippingMethodType, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
 
 export function ShippingDeliveryMethodForm({
   title,
@@ -20,10 +20,12 @@ export function ShippingDeliveryMethodForm({
   onShippingCostsChanged: (shippingCosts: ShippingCosts) => void;
   expandByDefault?: boolean;
 }) {
-  const {
-    dashboard: { navigate },
-  } = useSDK();
-  const uomName = unitOfMeasure === ShippingUnitOfMeasure.NUM_OF_ITEMS ? 'item' : 'Kg';
+  const uomName =
+    unitOfMeasure === ShippingUnitOfMeasure.NUM_OF_ITEMS
+      ? 'item'
+      : unitOfMeasure === ShippingUnitOfMeasure.WEIGHT_IN_LB
+        ? 'Lb'
+        : 'Kg';
   const [isOpen, setIsOpen] = useState(expandByDefault);
   return (
     <Card>
@@ -43,7 +45,8 @@ export function ShippingDeliveryMethodForm({
                 }
                 options={[
                   { id: ShippingUnitOfMeasure.NUM_OF_ITEMS, value: 'Number of Items' },
-                  { id: ShippingUnitOfMeasure.WEIGHT, value: 'Weight' },
+                  { id: ShippingUnitOfMeasure.WEIGHT_IN_KG, value: 'Weight in Kg' },
+                  { id: ShippingUnitOfMeasure.WEIGHT_IN_LB, value: 'Weight in Pounds' },
                 ]}
                 placeholder='Select parameter'
               />
@@ -56,7 +59,7 @@ export function ShippingDeliveryMethodForm({
                   <FormField label={`First ${uomName}`}>
                     <Input
                       prefix={<Input.Affix>$</Input.Affix>}
-                      placeholder='Select price'
+                      placeholder='Select totalPrice'
                       type='number'
                       value={shippingCosts.first}
                       onChange={(e) => {
@@ -69,7 +72,7 @@ export function ShippingDeliveryMethodForm({
                   <FormField label={`Second ${uomName}`}>
                     <Input
                       prefix={<Input.Affix>$</Input.Affix>}
-                      placeholder='Select price'
+                      placeholder='Select totalPrice'
                       type='number'
                       value={shippingCosts.second}
                       onChange={(e) => {
@@ -87,7 +90,7 @@ export function ShippingDeliveryMethodForm({
                       onChange={(e) => {
                         onShippingCostsChanged({ ...shippingCosts, thirdAndUp: Number(e.currentTarget.value) });
                       }}
-                      placeholder='Select price'
+                      placeholder='Select totalPrice'
                       type='number'
                     />
                   </FormField>

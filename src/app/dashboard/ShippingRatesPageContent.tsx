@@ -1,35 +1,64 @@
 'use client';
-import { Box, Breadcrumbs, Button, Card, Cell, Layout, Page, WixDesignSystemProvider } from '@wix/design-system';
+import { Box, Breadcrumbs, Button, Cell, Layout, Loader, Page, WixDesignSystemProvider } from '@wix/design-system';
 import { useSDK } from '@/app/utils/wix-sdk.client';
 import { useCallback, useState } from 'react';
 import '@wix/design-system/styles.global.css';
-import { ShippingCosts, ShippingMethodType, ShippingUnitOfMeasure } from '@/app/dashboard/types';
-import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
 import { ActivationDetailsCard } from '@/app/dashboard/parts/ActivationDetailsCard';
 import { ShippingDeliveryMethodForm } from '@/app/dashboard/parts/ShippingDeliveryMethodForm';
+import { OrderSummary, ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
+import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
 
-export const ShippingRatesPageContent = () => {
+export const ShippingRatesPageContent = ({
+  shippingAppData,
+  orders,
+  setShippingAppData,
+}: {
+  shippingAppData: ShippingAppData;
+  orders?: OrderSummary[];
+  setShippingAppData: (data: ShippingAppData) => Promise<void>;
+}) => {
   const {
     dashboard: { showToast },
   } = useSDK();
+  const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData>(shippingAppData);
+  const [loading, setLoading] = useState(false);
   const onSave = useCallback(() => {
-    showToast({
-      message: 'Data is not really saved :)',
-      type: 'success',
-    });
-  }, [showToast]);
-  const [standardShippingUom, setStandardShippingUom] = useState(ShippingUnitOfMeasure.NUM_OF_ITEMS);
-  const [expressShippingUom, setExpressShippingUom] = useState(ShippingUnitOfMeasure.NUM_OF_ITEMS);
-  const [standardShippingCosts, setStandardShippingCosts] = useState<ShippingCosts>({
-    first: 5,
-    second: 2,
-    thirdAndUp: 1,
-  });
-  const [expressShippingCosts, setExpressShippingCosts] = useState<ShippingCosts>({
-    first: 10,
-    second: 4,
-    thirdAndUp: 2,
-  });
+    setLoading(true);
+    setShippingAppData(currentShippingAppData)
+      .then(() => {
+        showToast({
+          message: 'Shipping rates saved successfully',
+          type: 'success',
+        });
+      })
+      .catch(() => {
+        showToast({
+          message: 'Failed to save shipping rates',
+          type: 'error',
+        });
+      })
+      .finally(() => setLoading(false));
+  }, [showToast, currentShippingAppData, setShippingAppData]);
+  const setUomForMethod = useCallback(
+    (code: string) => (type: ShippingUnitOfMeasure) => {
+      setCurrentShippingAppData({
+        ...currentShippingAppData,
+        shippingMethods: currentShippingAppData.shippingMethods.map((m) =>
+          m.code === code ? { ...m, unitOfMeasure: type } : m,
+        ),
+      });
+    },
+    [currentShippingAppData],
+  );
+  const setCostsForMethod = useCallback(
+    (code: string) => (costs: ShippingCosts) => {
+      setCurrentShippingAppData({
+        ...currentShippingAppData,
+        shippingMethods: currentShippingAppData.shippingMethods.map((m) => (m.code === code ? { ...m, costs } : m)),
+      });
+    },
+    [currentShippingAppData],
+  );
   return (
     <WixDesignSystemProvider>
       <Page height='100vh'>
@@ -37,7 +66,7 @@ export const ShippingRatesPageContent = () => {
           actionsBar={
             <Box gap='SP2'>
               <Button skin='inverted'>Cancel</Button>
-              <Button onClick={onSave}>Save</Button>
+              <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>
             </Box>
           }
           breadcrumbs={
@@ -57,27 +86,19 @@ export const ShippingRatesPageContent = () => {
           <Layout>
             <Cell span={8}>
               <Layout>
-                <Cell>
-                  <ShippingDeliveryMethodForm
-                    expandByDefault
-                    title='Standard Delivery'
-                    unitOfMeasure={standardShippingUom}
-                    onUnitOfMeasureSelected={setStandardShippingUom}
-                    shippingCosts={standardShippingCosts}
-                    onShippingCostsChanged={setStandardShippingCosts}
-                    methodType={ShippingMethodType.STANDARD}
-                  />
-                </Cell>
-                <Cell>
-                  <ShippingDeliveryMethodForm
-                    title='Express Delivery'
-                    unitOfMeasure={expressShippingUom}
-                    onUnitOfMeasureSelected={setExpressShippingUom}
-                    shippingCosts={expressShippingCosts}
-                    onShippingCostsChanged={setExpressShippingCosts}
-                    methodType={ShippingMethodType.EXPRESS}
-                  />
-                </Cell>
+                {currentShippingAppData.shippingMethods.map((method, index) => (
+                  <Cell key={method.code}>
+                    <ShippingDeliveryMethodForm
+                      expandByDefault={index === 0}
+                      title={method.title}
+                      unitOfMeasure={method.unitOfMeasure}
+                      onUnitOfMeasureSelected={setUomForMethod(method.code)}
+                      shippingCosts={method.costs}
+                      onShippingCostsChanged={setCostsForMethod(method.code)}
+                      methodType={method.type}
+                    />
+                  </Cell>
+                ))}
                 <Cell>
                   <ActivationDetailsCard />
                 </Cell>
@@ -85,27 +106,7 @@ export const ShippingRatesPageContent = () => {
             </Cell>
             <Cell span={4}>
               <Page.Sticky>
-                <Card>
-                  <Card.Header title='Rate Summary' />
-                  <Card.Divider />
-                  <Card.Content>
-                    <Box direction='vertical' paddingBottom='SP4' gap='10px'>
-                      <ShippingMethodSummary
-                        title='Standard Delivery'
-                        shippingCosts={standardShippingCosts}
-                        unitOfMeasure={standardShippingUom}
-                      />
-                    </Box>
-                    <Card.Divider />
-                    <Box direction='vertical' paddingTop='SP4' gap='10px'>
-                      <ShippingMethodSummary
-                        title='Express Delivery'
-                        shippingCosts={expressShippingCosts}
-                        unitOfMeasure={expressShippingUom}
-                      />
-                    </Box>
-                  </Card.Content>
-                </Card>
+                <ShippingMethodSummary orders={orders} />
               </Page.Sticky>
             </Cell>
             <Cell>
@@ -113,7 +114,7 @@ export const ShippingRatesPageContent = () => {
                 <Page.Footer.End>
                   <Box gap='SP2'>
                     <Button priority='secondary'>Cancel</Button>
-                    <Button onClick={onSave}>Save</Button>
+                    <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>
                   </Box>
                 </Page.Footer.End>
               </Page.Footer>
