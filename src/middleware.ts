@@ -21,6 +21,8 @@ export async function middleware(request: NextRequest) {
         accessTokenRes.headers.get('x-wix-request-id'),
       );
     }
+  } else if (request.nextUrl.searchParams.get('instance')) {
+    headers.set('Authorization', request.nextUrl.searchParams.get('instance')!);
   }
   return NextResponse.next({
     headers,
