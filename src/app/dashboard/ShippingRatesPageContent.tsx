@@ -73,7 +73,11 @@ export const ShippingRatesPageContent = ({
     [loading, onSave, persistedData],
   );
   return (
-    <WixDesignSystemProvider>
+    <WixDesignSystemProvider
+      features={{
+        newColorsBranding: true,
+      }}
+    >
       <Page height='100vh'>
         <Page.Header
           actionsBar={<ButtonsBar />}
@@ -116,13 +120,6 @@ export const ShippingRatesPageContent = ({
               <Page.Sticky>
                 <ShippingMethodSummary orders={orders} />
               </Page.Sticky>
-            </Cell>
-            <Cell>
-              <Page.Footer divider>
-                <Page.Footer.End>
-                  <ButtonsBar />
-                </Page.Footer.End>
-              </Page.Footer>
             </Cell>
           </Layout>
         </Page.Content>
