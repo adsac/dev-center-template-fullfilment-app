@@ -1,7 +1,7 @@
 'use client';
 import { Box, Breadcrumbs, Button, Cell, Layout, Loader, Page, WixDesignSystemProvider } from '@wix/design-system';
 import { useSDK } from '@/app/utils/wix-sdk.client';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import '@wix/design-system/styles.global.css';
 import { ActivationDetailsCard } from '@/app/dashboard/parts/ActivationDetailsCard';
 import { ShippingDeliveryMethodForm } from '@/app/dashboard/parts/ShippingDeliveryMethodForm';
@@ -9,23 +9,25 @@ import { OrderSummary, ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } f
 import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
 
 export const ShippingRatesPageContent = ({
-  shippingAppData,
+  shippingAppData: initialShippingAppData,
   orders,
-  setShippingAppData,
+  persistShippingAppData,
 }: {
   shippingAppData: ShippingAppData;
   orders?: OrderSummary[];
-  setShippingAppData: (data: ShippingAppData) => Promise<void>;
+  persistShippingAppData: (data: ShippingAppData) => Promise<void>;
 }) => {
   const {
     dashboard: { showToast },
   } = useSDK();
-  const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData>(shippingAppData);
+  const [persistedData, setPersistedData] = useState<ShippingAppData>(initialShippingAppData);
+  const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData>(initialShippingAppData);
   const [loading, setLoading] = useState(false);
   const onSave = useCallback(() => {
     setLoading(true);
-    setShippingAppData(currentShippingAppData)
+    persistShippingAppData(currentShippingAppData)
       .then(() => {
+        setPersistedData(currentShippingAppData);
         showToast({
           message: 'Shipping rates saved successfully',
           type: 'success',
@@ -38,7 +40,7 @@ export const ShippingRatesPageContent = ({
         });
       })
       .finally(() => setLoading(false));
-  }, [showToast, currentShippingAppData, setShippingAppData]);
+  }, [showToast, currentShippingAppData, persistShippingAppData]);
   const setUomForMethod = useCallback(
     (code: string) => (type: ShippingUnitOfMeasure) => {
       setCurrentShippingAppData({
@@ -59,16 +61,22 @@ export const ShippingRatesPageContent = ({
     },
     [currentShippingAppData],
   );
+  const ButtonsBar = useCallback(
+    () => (
+      <Box gap='SP2'>
+        <Button skin='inverted' onClick={() => setCurrentShippingAppData(persistedData)}>
+          Cancel
+        </Button>
+        <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>
+      </Box>
+    ),
+    [loading, onSave, persistedData],
+  );
   return (
     <WixDesignSystemProvider>
       <Page height='100vh'>
         <Page.Header
-          actionsBar={
-            <Box gap='SP2'>
-              <Button skin='inverted'>Cancel</Button>
-              <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>
-            </Box>
-          }
+          actionsBar={<ButtonsBar />}
           breadcrumbs={
             <Breadcrumbs
               activeId='2'
@@ -112,10 +120,7 @@ export const ShippingRatesPageContent = ({
             <Cell>
               <Page.Footer divider>
                 <Page.Footer.End>
-                  <Box gap='SP2'>
-                    <Button priority='secondary'>Cancel</Button>
-                    <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>
-                  </Box>
+                  <ButtonsBar />
                 </Page.Footer.End>
               </Page.Footer>
             </Cell>

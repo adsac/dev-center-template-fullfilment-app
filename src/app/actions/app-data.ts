@@ -38,5 +38,5 @@ export async function getShippingAppData(): Promise<ShippingAppData> {
 
 export async function setShippingAppData(data: ShippingAppData): Promise<void> {
   // you are expected to properly implement it such that it would persist the data in a DB which is not part of the template
-  console.log('setShippingAppData::', data);
+  console.log('persistShippingAppData::', JSON.stringify(data, null, 2));
 }
