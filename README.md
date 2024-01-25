@@ -44,11 +44,13 @@ Open [https://localhost:3000/dashboard](https://localhost:3000/dashboard) with y
 ![app dashboard](docs/assets/images/app-dashbaord.png)
   Pre-integrated with [Wix Design System](https://www.wixdesignsystem.com/) and [Wix Dashboard SDK](https://dev.wix.com/docs/sdk/api-reference/dashboard/introduction)
 * Including SSR support
-* Server components are not yet supported by Wix Design System, but SSR is supported.
+  * Server components are not yet supported by Wix Design System, but SSR is supported.
 * Provides a simple dashboard page with navigations to relevant pages and a simple example of a shipping delivery form
-* **Note**: This example dashboard implementation does not include the actual persistence of the model to an actual DB
+* Integrates with [Wix Data API](https://dev.wix.com/docs/sdk/api-reference/data/items/query-data-items) to query last orders and present last 3 orders in the dashboard
 
-#### Entry point
+**Note**: This example dashboard implementation does not include the actual persistence of the model to an actual DB
+
+#### Development Entry point
 1. [`dashboard/page.tsx`](./src/app/dashboard/page.tsx)
    * The page uses the sample app model implementation in [`app-data.model.ts`](./src/app/types/app-data.model.ts). It provides an array of shipping delivery methods, which can be extended to your needs
    * The dashboard page uses both the client side SDK implementation [`wix-sdk.client.ts`](./src/app/utils/wix-sdk.client.ts) and server side - [`wix-sdk.ssr.ts`](./src/app/utils/wix-sdk.ssr.ts) for SSR support.
@@ -57,8 +59,8 @@ Open [https://localhost:3000/dashboard](https://localhost:3000/dashboard) with y
 ![Checkout Delivery method](docs/assets/images/checkout-delivery-methods.png)
 * [Wix Checkout Delivery method SPI](https://dev.wix.com/docs/rest/api-reference/wix-e-commerce/shipping-rates-integration-spi/introduction) is used to provide a custom delivery methods for Wix checkout
 
-#### Entry point
-1. [`/api/shipping-rates/v1/getRates`](./src/app/api/shipping-rates/v1/getRates/route.ts)
+#### Development Entry point
+1. [`/api/shipping-rates/v1/getRates/`(route.ts)](./src/app/api/shipping-rates/v1/getRates/route.ts)
 * Provides a simple implementation of a shipping delivery method, which can be extended to your needs. 
 * The provided implementation receives the ordered items, their weight and quantity, and returns a list of delivery methods with their price and estimated delivery time
   * If the calculation of the delivery method is by weight, the implementation checks the unit of the weight, and converts it from KG to LB or vice versa if needed.
@@ -68,10 +70,10 @@ Open [https://localhost:3000/dashboard](https://localhost:3000/dashboard) with y
 * Exchange authorization code for access token
 * Get App instance information using the access token using [Get app instance API](https://dev.wix.com/docs/rest/api-reference/app-management/apps/app-instance/get-app-instance)
 
-#### Entry points
-1. [`/api/oauth/v1/authorize`](./src/app/api/oauth/v1/authorize/route.ts)
+#### Development Entry points
+1. [`/api/oauth/v1/authorize/`(route.ts)](./src/app/api/oauth/v1/authorize/route.ts)
    * Implements the [installation URL](https://dev.wix.com/docs/build-apps/build-your-app/authentication/oauth#step-1-user-installs-your-app) in Wix App Oauth flow, which defines some state and redirects to Wix App Oauth URL, including the redirect URL to the callback endpoint in the application.<br>
-2. [`/api/oauth/v1/signup`](./src/app/api/oauth/v1/signup/route.ts)
+2. [`/api/oauth/v1/signup/`(route.ts)](./src/app/api/oauth/v1/signup/route.ts)
    * Implements the [redirect URL](https://dev.wix.com/docs/build-apps/build-your-app/authentication/oauth#step-3-wix-redirects-user-to-apps-redirecturl) which received the authorization code and exchanges it for an access token and invokes [Get app instance API](https://dev.wix.com/docs/rest/api-reference/app-management/apps/app-instance/get-app-instance) using it.
 
 ### Webhooks
@@ -79,10 +81,10 @@ Open [https://localhost:3000/dashboard](https://localhost:3000/dashboard) with y
 * Parse JWT token from Wix using app secret and verify signature
 * Example "App Installed" and "App Removed" webhooks
 
-#### Entry points
-1. [`/api/webhooks/v1/install`](./src/app/api/webhooks/v1/install/route.ts)
+#### Development Entry points
+1. [`/api/webhooks/v1/install/`(route.ts)](./src/app/api/webhooks/v1/install/route.ts)
     * Parse the JWT token from Wix using app secret and verify signature, allowing you to add your logic to handle the "App Installed" webhook
-2. [`/api/webhooks/v1/uninstall`](./src/app/api/webhooks/v1/uninstall/route.ts)
+2. [`/api/webhooks/v1/uninstall/`(route.ts)](./src/app/api/webhooks/v1/uninstall/route.ts)
     * Parse the JWT token from Wix using app secret and verify signature, allowing you to add your logic to handle the "App Installed" webhook
 
 
