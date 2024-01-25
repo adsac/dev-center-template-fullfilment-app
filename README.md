@@ -1,4 +1,17 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Aimed to provide an example Shipping Fulfillment App for [Wix App Market](https://dev.wix.com/docs/build-apps).
+
+
+
+## Features
+* Oauth integration with Wix using [Wix Apps OAuth API](https://dev.wix.com/docs/build-apps/build-your-app/authentication/oauth)
+  * Exchange authorization code for access token
+  * Get App instance information
+* Webhooks support using [Wix Apps Webhooks API](https://dev.wix.com/docs/build-apps/developer-tools/apis-and-webhooks/webhooks)
+  * Parse JWT token from Wix using app secret and verify signature
+  * Example - App Installed and App Removed webhooks
+* 
+
 
 ## Getting Started
 

@@ -1,5 +1,6 @@
 import { useSDK } from '@/app/utils/wix-sdk.client';
 import { Box, Card, Text, TextButton } from '@wix/design-system';
+import { WixPageId } from '@/app/utils/navigation.const';
 
 export function ActivationDetailsCard() {
   const {
@@ -16,7 +17,10 @@ export function ActivationDetailsCard() {
             <ol style={{ marginBottom: '0' }}>
               <li style={{ marginBottom: '0', marginLeft: '24px' }}>
                 Go to{' '}
-                <TextButton onClick={() => navigate('stores.shipping')}>Shipping and Delivery Settings</TextButton> page
+                <TextButton onClick={() => navigate(WixPageId.SHIPPING_INFO)}>
+                  Shipping and Delivery Settings
+                </TextButton>{' '}
+                page
               </li>
               <li style={{ marginBottom: '0', marginLeft: '24px' }}>
                 Select the regions you&apos;d like to apply the shipping rate logic on and click on the Edit button

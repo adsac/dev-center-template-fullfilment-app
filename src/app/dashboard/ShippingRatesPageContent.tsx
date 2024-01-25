@@ -7,6 +7,7 @@ import { ActivationDetailsCard } from '@/app/dashboard/parts/ActivationDetailsCa
 import { ShippingDeliveryMethodForm } from '@/app/dashboard/parts/ShippingDeliveryMethodForm';
 import { OrderSummary, ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
 import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
+import { WixPageId } from '@/app/utils/navigation.const';
 
 export const ShippingRatesPageContent = ({
   shippingAppData: initialShippingAppData,
@@ -85,7 +86,7 @@ export const ShippingRatesPageContent = ({
             <Breadcrumbs
               activeId='2'
               items={[
-                { id: 'app-market-my-apps-component', value: 'Apps' },
+                { id: WixPageId.MANAGE_APPS, value: 'Apps' },
                 { id: 'shipping-app-page', value: 'Shipping Rate App', disabled: true },
               ]}
               onClick={({ id }) => navigate(id as string)}

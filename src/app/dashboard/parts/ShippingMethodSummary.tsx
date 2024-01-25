@@ -2,9 +2,7 @@ import { Box, Card, Divider, Text, TextButton } from '@wix/design-system';
 import { ArrowRight } from '@wix/wix-ui-icons-common';
 import { useSDK } from '@/app/utils/wix-sdk.client';
 import { OrderSummary } from '@/app/types/app-data.model';
-
-// see https://dev.wix.com/docs/sdk/api-reference/dashboard/navigate
-const ORDERS_PAGE_ID = '8107f05f-d646-4c81-be90-adf28d321398';
+import { WixPageId } from '@/app/utils/navigation.const';
 
 const LOCALE = 'en-US';
 
@@ -55,7 +53,7 @@ export function ShippingMethodSummary({ orders }: { orders?: OrderSummary[] }) {
           )}
         </Box>
         <Box align='right' paddingTop='SP1'>
-          <TextButton onClick={() => navigate(ORDERS_PAGE_ID)} size='small' suffixIcon={<ArrowRight />}>
+          <TextButton onClick={() => navigate(WixPageId.MANAGE_ORDERS)} size='small' suffixIcon={<ArrowRight />}>
             Go to all orders
           </TextButton>
         </Box>
