@@ -7,9 +7,14 @@ Aimed to provide an example Shipping Fulfillment App for [Wix App Market](https:
 The application requires the following environment variables to be set:
 * `WIX_APP_ID` - The application ID in Wix Development Center (The application you created in Wix Development Center)
 * `WIX_APP_SECRET` - The application secret in Wix Development Center, as described in the [Ouath flow documentation](https://dev.wix.com/docs/build-apps/build-your-app/authentication/oauth#step-4-app-requests-the-authorization-code)
-* `WIX_APP_JWT_KEY` - Your application webhooks public key, as described in the [Webhooks documentation](https://dev.wix.com/docs/build-apps/developer-tools/apis-and-webhooks/webhooks#register-for-webhooks)<br>
-  For local development, these variables should be set in the `.env.local` file, which is not committed to source control, they are all server side variables, your public key and secret should not be exposed to the client.
-  When deploying to production, these variables should be set in the environment variables of the hosting platform.
+* `WIX_APP_JWT_KEY` - Your application webhooks public key, as described in the [Webhooks documentation](https://dev.wix.com/docs/build-apps/developer-tools/apis-and-webhooks/webhooks#register-for-webhooks)
+
+For local development, these variables should be set in the `.env.local` file, which is not committed to source control.
+Also, they are all server side variables, your public key and secret should not be exposed to the client.<br>
+You can use [`.env.template`](./.env.template) as a template.<br>
+When deploying to production, these variables should be set as environment variables according to the hosting platform guidelines, for example:
+* [Netlify](https://docs.netlify.com/environment-variables/overview/)
+* [Vercel](https://vercel.com/docs/environment-variables)
 
 ### Running the application locally
 By default, the applications uses npm, but you can use yarn or pnpm as well.<br>
