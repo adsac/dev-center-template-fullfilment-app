@@ -5,9 +5,10 @@ import { useCallback, useMemo, useState } from 'react';
 import '@wix/design-system/styles.global.css';
 import { ActivationDetailsCard } from '@/app/dashboard/parts/ActivationDetailsCard';
 import { ShippingDeliveryMethodForm } from '@/app/dashboard/parts/ShippingDeliveryMethodForm';
-import { OrderSummary, ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
+import { ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
 import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
 import { WixPageId } from '@/app/utils/navigation.const';
+import { OrderSummary } from '@/app/types/order';
 
 export const ShippingRatesPageContent = ({
   shippingAppData: initialShippingAppData,

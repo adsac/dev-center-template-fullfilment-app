@@ -1,6 +1,7 @@
 'use server';
 import { createSdk } from '@/app/utils/wix-sdk.ssr';
-import { OrderSummary } from '@/app/types/app-data.model';
+
+import { OrderSummary } from '@/app/types/order';
 
 export async function getLastOrders() {
   const sdk = createSdk();

@@ -1,8 +1,8 @@
 import { Box, Card, Divider, Text, TextButton } from '@wix/design-system';
 import { ArrowRight } from '@wix/wix-ui-icons-common';
 import { useSDK } from '@/app/utils/wix-sdk.client';
-import { OrderSummary } from '@/app/types/app-data.model';
 import { WixPageId } from '@/app/utils/navigation.const';
+import { OrderSummary } from '@/app/types/order';
 
 const LOCALE = 'en-US';
 

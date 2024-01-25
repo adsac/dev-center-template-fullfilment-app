@@ -1,4 +1,4 @@
-import { ShippingRatesPageContent } from '@/app/dashboard/ShippingRatesPageContent';
+import { ShippingRatesPageContent } from '@/app/dashboard/parts/ShippingRatesPageContent';
 import { getLastOrders } from '@/app/actions/orders';
 import { getShippingAppData, setShippingAppData } from '@/app/actions/app-data';
 
