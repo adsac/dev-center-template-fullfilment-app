@@ -18,7 +18,7 @@ export const ShippingRatesPageContent = ({
   persistShippingAppData: (data: ShippingAppData) => Promise<void>;
 }) => {
   const {
-    dashboard: { showToast },
+    dashboard: { showToast, navigate },
   } = useSDK();
   const [persistedData, setPersistedData] = useState<ShippingAppData>(initialShippingAppData);
   const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData>(initialShippingAppData);
@@ -85,10 +85,10 @@ export const ShippingRatesPageContent = ({
             <Breadcrumbs
               activeId='2'
               items={[
-                { id: '1', value: 'Apps' },
-                { id: '2', value: 'Shipping Rate App' },
+                { id: 'app-market-my-apps-component', value: 'Apps' },
+                { id: 'shipping-app-page', value: 'Shipping Rate App', disabled: true },
               ]}
-              onClick={() => {}}
+              onClick={({ id }) => navigate(id as string)}
             />
           }
           title='Shipping Rate App'
