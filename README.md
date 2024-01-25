@@ -29,8 +29,6 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [https://localhost:3000/dashboard](https://localhost:3000/dashboard) with your browser to see the result.
