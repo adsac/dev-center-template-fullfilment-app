@@ -1,5 +1,6 @@
 import { type NextRequest } from 'next/server';
 import { redirect } from 'next/navigation';
+import { getAppInstance } from '@/app/actions/app-instance';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -24,23 +25,17 @@ export async function GET(request: NextRequest) {
 
   const { access_token: accessToken, refresh_token: refreshToken } = await accessRes.json();
 
-  const appInstanceRes = await fetch('https://www.wixapis.com/apps/v1/instance', {
-    method: 'GET',
-    headers: {
-      Authorization: accessToken,
-    },
-  });
-
-  const appInstance: { instance: Record<string, any> & { instanceId: string }; site: Record<string, any> } =
-    await appInstanceRes.json();
-
-  const instanceId = appInstance.instance.instanceId;
+  const { instance } = await getAppInstance(accessToken);
 
   // you should now store the mapping between instance id and refresh token in a DB,
   // in order to issue a new access token in the future for an app instance
   // see: https://dev.wix.com/docs/rest/articles/getting-started/authentication
 
-  console.log('received oauth refresh and access tokens - ', { accessToken, refreshToken, instanceId });
+  console.log('received oauth refresh and access tokens - ', {
+    accessToken,
+    refreshToken,
+    instanceId: instance.instanceId,
+  });
 
   return redirect(`https://www.wix.com/installer/close-window?access_token=${accessToken}`);
 }

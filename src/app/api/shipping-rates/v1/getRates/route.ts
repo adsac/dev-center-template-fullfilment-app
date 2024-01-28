@@ -5,12 +5,14 @@ import { getShippingAppData } from '@/app/actions/app-data';
 
 export async function POST(request: Request) {
   console.info('Shipping rates::POST - called');
-  const [jwtPayload, appData] = await Promise.all([request.text(), getShippingAppData()]);
+  const jwtPayload = await request.text();
 
   console.log('Shipping rates::POST - input: ', jwtPayload);
 
   // verify the data was not tampered with, and get the input
   const input = parseJwt<GetShippingRatesData>(jwtPayload, true)!;
+
+  const appData = await getShippingAppData({ instanceId: input.metadata.instanceId });
 
   const currency = input.metadata.currency;
 
