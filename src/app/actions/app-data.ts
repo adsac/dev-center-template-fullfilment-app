@@ -39,7 +39,7 @@ const getDatabaseKey = async ({ instanceId }: { instanceId?: string } = {}) => {
   let databaseKey = instanceId;
   if (!databaseKey) {
     const appInstance = await getAppInstance();
-    databaseKey = appInstance.instance.instanceId;
+    databaseKey = appInstance.instance?.instanceId;
   }
   return databaseKey;
 };
