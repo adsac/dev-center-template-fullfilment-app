@@ -3,8 +3,8 @@ import { createSdk } from '@/app/utils/wix-sdk.ssr';
 
 import { OrderSummary } from '@/app/types/order';
 
-export async function getLastOrders() {
-  const sdk = createSdk();
+export async function getLastOrders(accessToken?: string | null) {
+  const sdk = createSdk(accessToken);
   return sdk.items
     .queryDataItems({
       dataCollectionId: 'Stores/Orders',
@@ -23,7 +23,7 @@ export async function getLastOrders() {
       ),
     )
     .catch((e) => {
-      console.error('Failed to fetch orders: ', e);
+      console.error('Failed to fetch orders.ts: ', e);
       return [];
     });
 }

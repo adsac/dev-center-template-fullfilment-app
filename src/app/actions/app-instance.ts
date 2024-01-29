@@ -1,7 +1,8 @@
+'use server';
 import { headers } from 'next/headers';
 
 export const getAppInstance = async (
-  accessToken?: string,
+  accessToken?: string | null,
 ): Promise<{ instance: Record<string, any> & { instanceId: string }; site: Record<string, any> }> =>
   fetch('https://www.wixapis.com/apps/v1/instance', {
     method: 'GET',

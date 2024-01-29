@@ -1,35 +1,34 @@
 'use client';
-import { Box, Breadcrumbs, Button, Cell, Layout, Loader, Page, WixDesignSystemProvider } from '@wix/design-system';
+import { Box, Breadcrumbs, Button, Cell, Layout, Loader, Page } from '@wix/design-system';
 import { useSDK } from '@/app/utils/wix-sdk.client';
-import { useCallback, useMemo, useState } from 'react';
-import '@wix/design-system/styles.global.css';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivationDetailsCard } from '@/app/dashboard/parts/ActivationDetailsCard';
 import { ShippingDeliveryMethodForm } from '@/app/dashboard/parts/ShippingDeliveryMethodForm';
 import { ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
 import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
 import { WixPageId } from '@/app/utils/navigation.const';
-import { OrderSummary } from '@/app/types/order';
+import { useSetShippingAppData, useShippingAppData } from '@/app/client-hooks/app-data';
+import { useOrders } from '@/app/client-hooks/orders';
 
-export const ShippingRatesPageContent = ({
-  shippingAppData: initialShippingAppData,
-  orders,
-  persistShippingAppData,
-}: {
-  shippingAppData: ShippingAppData;
-  orders?: OrderSummary[];
-  persistShippingAppData: (data: ShippingAppData) => Promise<void>;
-}) => {
+export const ShippingRatesPageContent = ({}: {}) => {
   const {
     dashboard: { showToast, navigate },
   } = useSDK();
-  const [persistedData, setPersistedData] = useState<ShippingAppData>(initialShippingAppData);
-  const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData>(initialShippingAppData);
+  const persistShippingAppData = useSetShippingAppData();
+  const { data: persistedShippingAppData } = useShippingAppData();
+  const { data: orders } = useOrders();
+  const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData | undefined>(
+    persistedShippingAppData,
+  );
+  useEffect(() => {
+    setCurrentShippingAppData(persistedShippingAppData);
+  }, [persistedShippingAppData]);
+
   const [loading, setLoading] = useState(false);
   const onSave = useCallback(() => {
     setLoading(true);
-    persistShippingAppData(currentShippingAppData)
+    persistShippingAppData(currentShippingAppData!)
       .then(() => {
-        setPersistedData(currentShippingAppData);
         showToast({
           message: 'Shipping rates saved successfully',
           type: 'success',
@@ -42,12 +41,12 @@ export const ShippingRatesPageContent = ({
         });
       })
       .finally(() => setLoading(false));
-  }, [showToast, currentShippingAppData, persistShippingAppData]);
+  }, [showToast, currentShippingAppData]);
   const setUomForMethod = useCallback(
     (code: string) => (type: ShippingUnitOfMeasure) => {
       setCurrentShippingAppData({
         ...currentShippingAppData,
-        shippingMethods: currentShippingAppData.shippingMethods.map((m) =>
+        shippingMethods: currentShippingAppData!.shippingMethods.map((m) =>
           m.code === code ? { ...m, unitOfMeasure: type } : m,
         ),
       });
@@ -58,7 +57,7 @@ export const ShippingRatesPageContent = ({
     (code: string) => (costs: ShippingCosts) => {
       setCurrentShippingAppData({
         ...currentShippingAppData,
-        shippingMethods: currentShippingAppData.shippingMethods.map((m) => (m.code === code ? { ...m, costs } : m)),
+        shippingMethods: currentShippingAppData!.shippingMethods.map((m) => (m.code === code ? { ...m, costs } : m)),
       });
     },
     [currentShippingAppData],
@@ -66,66 +65,60 @@ export const ShippingRatesPageContent = ({
   const ButtonsBar = useCallback(
     () => (
       <Box gap='SP2'>
-        <Button skin='inverted' onClick={() => setCurrentShippingAppData(persistedData)}>
+        <Button skin='inverted' onClick={() => setCurrentShippingAppData(persistedShippingAppData)}>
           Cancel
         </Button>
         <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>
       </Box>
     ),
-    [loading, onSave, persistedData],
+    [loading, onSave, persistedShippingAppData],
   );
   return (
-    <WixDesignSystemProvider
-      features={{
-        newColorsBranding: true,
-      }}
-    >
-      <Page height='100vh'>
-        <Page.Header
-          actionsBar={<ButtonsBar />}
-          breadcrumbs={
-            <Breadcrumbs
-              activeId='2'
-              items={[
-                { id: WixPageId.MANAGE_APPS, value: 'Apps' },
-                { id: 'shipping-app-page', value: 'Shipping Rate App', disabled: true },
-              ]}
-              onClick={({ id }) => navigate(id as string)}
-            />
-          }
-          title='Shipping Rate App'
-          subtitle='Tailor shipping charges based on delivery speed and items quantity, ensuring a flexible and cost-effective solution for your business.'
-        />
-        <Page.Content>
-          <Layout>
-            <Cell span={8}>
-              <Layout>
-                {currentShippingAppData.shippingMethods.map((method, index) => (
-                  <Cell key={method.code}>
-                    <ShippingDeliveryMethodForm
-                      expandByDefault={index === 0}
-                      title={method.title}
-                      unitOfMeasure={method.unitOfMeasure}
-                      onUnitOfMeasureSelected={setUomForMethod(method.code)}
-                      shippingCosts={method.costs}
-                      onShippingCostsChanged={setCostsForMethod(method.code)}
-                      methodType={method.type}
-                    />
-                  </Cell>
-                ))}
-                <Cell>
-                  <ActivationDetailsCard />
+    <Page height='100vh'>
+      <Page.Header
+        actionsBar={<ButtonsBar />}
+        breadcrumbs={
+          <Breadcrumbs
+            activeId='2'
+            items={[
+              { id: WixPageId.MANAGE_APPS, value: 'Apps' },
+              { id: 'shipping-app-page', value: 'Shipping Rate App', disabled: true },
+            ]}
+            onClick={({ id }) => navigate(id as string)}
+          />
+        }
+        title='Shipping Rate App'
+        subtitle='Tailor shipping charges based on delivery speed and items quantity, ensuring a flexible and cost-effective solution for your business.'
+      />
+      <Page.Content>
+        <Layout>
+          <Cell span={8}>
+            <Layout>
+              {currentShippingAppData?.shippingMethods.map((method, index) => (
+                <Cell key={method.code}>
+                  <ShippingDeliveryMethodForm
+                    expandByDefault={index === 0}
+                    title={method.title}
+                    unitOfMeasure={method.unitOfMeasure}
+                    onUnitOfMeasureSelected={setUomForMethod(method.code)}
+                    shippingCosts={method.costs}
+                    onShippingCostsChanged={setCostsForMethod(method.code)}
+                    methodType={method.type}
+                  />
                 </Cell>
-              </Layout>
-            </Cell>
-            <Cell span={4}>
-              <Page.Sticky>
-                <ShippingMethodSummary orders={orders} />
-              </Page.Sticky>
-            </Cell>
-          </Layout>
-        </Page.Content>
-      </Page>
-    </WixDesignSystemProvider>
+              ))}
+              <Cell>
+                <ActivationDetailsCard />
+              </Cell>
+            </Layout>
+          </Cell>
+          <Cell span={4}>
+            <Page.Sticky>
+              <ShippingMethodSummary orders={orders} />
+            </Page.Sticky>
+          </Cell>
+        </Layout>
+      </Page.Content>
+    </Page>
   );
 };

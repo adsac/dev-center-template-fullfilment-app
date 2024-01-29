@@ -38,6 +38,13 @@ pnpm dev
 
 Open [https://localhost:3000/dashboard](https://localhost:3000/dashboard) with your browser to see the result.
 
+In order to test an actual integration with the backend systems, use one of the following methods:
+* Change the urls in the dev center to point to https://localhost:3000/
+* Debug the application in the actual dashboard and copy the access token sent to provided to it by the dashboard sdk page and pass it as a query parameter `accessToken`
+  * This will set it as an `Authorization` header in the requests to the backend systems.
+  * See - [`middleware.ts`](./src/middleware.ts) for more details
+* Use a tool/plugin (i.e. Chrome plugin or `hosts` file on MacOS) to proxy calls from your deployment server to your local server in your browser so opening the dashboard page in Wix business manager will actually route the calls to your local server.
+
 
 ## Features
 ### Dashboard page

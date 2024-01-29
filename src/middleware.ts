@@ -4,27 +4,24 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   console.log('Resource requested: ', request.nextUrl.href, ' with method: ', request.method);
   const headers = request.headers;
-  if (request.nextUrl.searchParams.get('authorizationCode')) {
-    const otp = request.nextUrl.searchParams.get('authorizationCode');
-    const accessTokenRes = await fetch('https://manage.wix.com/token-creator/v1/token', {
-      method: 'POST',
-      body: JSON.stringify({ otp }),
-    });
-    if (accessTokenRes.status === 200) {
-      const tokens = await accessTokenRes.json();
-      headers.set('Authorization', tokens.accessToken);
-    } else {
-      console.error(
-        '*** Failed to create access token from authorizationCode status:',
-        accessTokenRes.status,
-        ' request id is: ',
-        accessTokenRes.headers.get('x-wix-request-id'),
-      );
-    }
-  } else if (request.nextUrl.searchParams.get('instance')) {
-    headers.set('Authorization', request.nextUrl.searchParams.get('instance')!);
+  if (request.nextUrl.searchParams.get('accessToken')) {
+    headers.set('Authorization', request.nextUrl.searchParams.get('accessToken')!);
   }
   return NextResponse.next({
     headers,
   });
 }
+
+export const config = {
+  matcher: [
+    {
+      source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      // otherwise server actions do not work
+      missing: [
+        { type: 'header', key: 'next-router-prefetch' },
+        { type: 'header', key: 'next-action' },
+        { type: 'header', key: 'purpose', value: 'prefetch' },
+      ],
+    },
+  ],
+};

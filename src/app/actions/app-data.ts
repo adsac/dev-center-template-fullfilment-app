@@ -2,6 +2,8 @@
 import { ShippingAppData, ShippingMethodType, ShippingUnitOfMeasure } from '@/app/types/app-data.model';
 import { getAppInstance } from '@/app/actions/app-instance';
 
+type AppIdentifier = { instanceId?: string | null; accessToken?: string | null } | undefined;
+
 const defaultAppData: ShippingAppData = {
   shippingMethods: [
     {
@@ -35,18 +37,18 @@ const defaultAppData: ShippingAppData = {
   ],
 };
 
-const getDatabaseKey = async ({ instanceId }: { instanceId?: string } = {}) => {
-  let databaseKey = instanceId;
+const getDatabaseKey = async (appIdentifier: AppIdentifier) => {
+  let databaseKey = appIdentifier?.instanceId;
   if (!databaseKey) {
-    const appInstance = await getAppInstance();
+    const appInstance = await getAppInstance(appIdentifier?.accessToken);
     databaseKey = appInstance.instance?.instanceId;
   }
   return databaseKey;
 };
 
-export async function getShippingAppData(appDataKey: { instanceId?: string } = {}): Promise<ShippingAppData> {
+export async function getShippingAppData(appIdentifier: AppIdentifier): Promise<ShippingAppData> {
   try {
-    const databaseKey = await getDatabaseKey(appDataKey);
+    const databaseKey = await getDatabaseKey(appIdentifier);
     console.log('getShippingAppData::key - ', databaseKey);
     return defaultAppData;
   } catch (e) {
@@ -55,11 +57,8 @@ export async function getShippingAppData(appDataKey: { instanceId?: string } = {
   }
 }
 
-export async function setShippingAppData(
-  data: ShippingAppData,
-  appDataKey: { instanceId?: string } = {},
-): Promise<void> {
-  const databaseKey = await getDatabaseKey(appDataKey);
+export async function setShippingAppData(data: ShippingAppData, appIdentifier: AppIdentifier): Promise<void> {
+  const databaseKey = await getDatabaseKey(appIdentifier);
   // you are expected to properly implement it such that it would persist the data in a DB which is not part of the template
   console.log('persistShippingAppData::', JSON.stringify(data, null, 2));
 }
