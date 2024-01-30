@@ -1,15 +1,16 @@
-import { Box, Card, Divider, Text, TextButton } from '@wix/design-system';
+import { Box, Card, Divider, Text, TextButton, SkeletonLine } from '@wix/design-system';
 import { ArrowRight } from '@wix/wix-ui-icons-common';
 import { useSDK } from '@/app/utils/wix-sdk.client';
 import { WixPageId } from '@/app/utils/navigation.const';
-import { OrderSummary } from '@/app/types/order';
+import { useOrders } from '@/app/client-hooks/orders';
 
 const LOCALE = 'en-US';
 
-export function ShippingMethodSummary({ orders }: { orders?: OrderSummary[] }) {
+export function ShippingMethodSummary() {
   const {
     dashboard: { navigate },
   } = useSDK();
+  const { data: orders, isLoading } = useOrders();
 
   return (
     <Card>
@@ -17,31 +18,44 @@ export function ShippingMethodSummary({ orders }: { orders?: OrderSummary[] }) {
       <Card.Divider />
       <Card.Content>
         <Box direction='vertical' paddingBottom='SP3'>
-          {orders?.length ? (
-            orders.map((order, index) => (
+          {isLoading || orders?.length ? (
+            (isLoading ? [null, null, null] : orders!).map((order, index) => (
               <>
                 {index > 0 && <Divider skin='light' />}
                 <Box key={index} verticalAlign='middle' align='space-between' paddingTop='SP2' paddingBottom='SP1'>
                   <Box direction='vertical'>
-                    <Text size='small' weight='normal'>
-                      Order #{order.id}
-                    </Text>
-                    <Text size='tiny' weight='thin' skin='disabled'>
-                      {new Date(order.createdDate).toLocaleDateString(LOCALE, {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </Text>
+                    {isLoading ? (
+                      <>
+                        <SkeletonLine marginBottom='5px' />
+                        <SkeletonLine marginBottom='5px' />
+                      </>
+                    ) : (
+                      <>
+                        <Text size='small' weight='normal'>
+                          Order #{order!.id}
+                        </Text>
+                        <Text size='tiny' weight='thin' skin='disabled'>
+                          {new Date(order!.createdDate).toLocaleDateString(LOCALE, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </Text>
+                      </>
+                    )}
                   </Box>
                   <Text size='tiny' weight='thin'>
-                    {new Intl.NumberFormat(LOCALE, {
-                      style: 'currency',
-                      currency: order.currency,
-                      minimumFractionDigits: 0,
-                    }).format(order.totalPrice)}
+                    {isLoading ? (
+                      <SkeletonLine />
+                    ) : (
+                      new Intl.NumberFormat(LOCALE, {
+                        style: 'currency',
+                        currency: order!.currency,
+                        minimumFractionDigits: 0,
+                      }).format(order!.totalPrice)
+                    )}
                   </Text>
                 </Box>
               </>

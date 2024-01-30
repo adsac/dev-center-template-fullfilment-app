@@ -4,15 +4,16 @@ import { useAccessToken } from '@/app/client-hooks/access-token';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getShippingAppData, setShippingAppData } from '@/app/actions/app-data';
 import { ShippingAppData } from '@/app/types/app-data.model';
+
+const queryKey = ['shipping-app-data'];
+
 export const useShippingAppData = () => {
   const accessTokenPromise = useAccessToken();
   return useQuery<ShippingAppData>({
-    queryKey: ['shipping-app-data'],
+    queryKey,
     queryFn: async () => {
       const accessToken = await accessTokenPromise;
-      const data = await getShippingAppData({ accessToken });
-      console.log('** useShippingAppData::data - ', data);
-      return data;
+      return getShippingAppData({ accessToken });
     },
   });
 };
@@ -26,7 +27,7 @@ export const useSetShippingAppData = () => {
       return setShippingAppData(newData, { accessToken });
     },
     onSuccess: (data) => {
-      void queryClient.invalidateQueries({ queryKey: ['shipping-app-data'] });
+      void queryClient.invalidateQueries({ queryKey });
     },
   });
   return mutateAsync;

@@ -3,25 +3,29 @@ import { createSdk } from '@/app/utils/wix-sdk.ssr';
 
 import { OrderSummary } from '@/app/types/order';
 
-export async function getLastOrders(accessToken?: string | null) {
+export async function getLastOrders(accessToken?: string | null): Promise<OrderSummary[]> {
   const sdk = createSdk(accessToken);
-  return sdk.items
-    .queryDataItems({
-      dataCollectionId: 'Stores/Orders',
+  return sdk.orders
+    .searchOrders({
+      search: {
+        cursorPaging: {
+          limit: 3,
+        },
+      },
     })
-    .limit(3)
-    .find()
-    .then((itemsRes) =>
-      itemsRes.items.map(
-        ({ _id, data }) =>
-          ({
-            id: data?.number ?? '',
-            createdDate: data?._dateCreated?.$date,
-            totalPrice: data?.totals.total ?? 0,
-            currency: data?.currency ?? 'USD',
-          }) as OrderSummary,
-      ),
-    )
+    .then((res) => {
+      return (
+        res.orders?.map(
+          (order) =>
+            ({
+              id: order.number ?? '',
+              createdDate: order?._createdDate ?? '',
+              totalPrice: order?.priceSummary?.totalPrice?.amount ?? 0,
+              currency: order?.currency ?? 'USD',
+            }) as OrderSummary,
+        ) ?? []
+      );
+    })
     .catch((e) => {
       console.error('Failed to fetch orders.ts: ', e);
       return [];

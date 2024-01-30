@@ -7,5 +7,5 @@ export const useAccessToken = () => {
   const searchParams = useSearchParams();
   return searchParams.get('accessToken')
     ? Promise.resolve(searchParams.get('accessToken'))
-    : dashboard.getAccessToken();
+    : dashboard.getAccessToken?.();
 };

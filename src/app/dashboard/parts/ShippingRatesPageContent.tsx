@@ -8,15 +8,13 @@ import { ShippingAppData, ShippingCosts, ShippingUnitOfMeasure } from '@/app/typ
 import { ShippingMethodSummary } from '@/app/dashboard/parts/ShippingMethodSummary';
 import { WixPageId } from '@/app/utils/navigation.const';
 import { useSetShippingAppData, useShippingAppData } from '@/app/client-hooks/app-data';
-import { useOrders } from '@/app/client-hooks/orders';
 
 export const ShippingRatesPageContent = ({}: {}) => {
   const {
     dashboard: { showToast, navigate },
   } = useSDK();
   const persistShippingAppData = useSetShippingAppData();
-  const { data: persistedShippingAppData } = useShippingAppData();
-  const { data: orders } = useOrders();
+  const { data: persistedShippingAppData, isLoading: isLoadingAppData } = useShippingAppData();
   const [currentShippingAppData, setCurrentShippingAppData] = useState<ShippingAppData | undefined>(
     persistedShippingAppData,
   );
@@ -41,7 +39,7 @@ export const ShippingRatesPageContent = ({}: {}) => {
         });
       })
       .finally(() => setLoading(false));
-  }, [showToast, currentShippingAppData]);
+  }, [persistShippingAppData, currentShippingAppData, showToast]);
   const setUomForMethod = useCallback(
     (code: string) => (type: ShippingUnitOfMeasure) => {
       setCurrentShippingAppData({
@@ -93,28 +91,38 @@ export const ShippingRatesPageContent = ({}: {}) => {
       <Page.Content>
         <Layout>
           <Cell span={8}>
-            <Layout>
-              {currentShippingAppData?.shippingMethods.map((method, index) => (
-                <Cell key={method.code}>
-                  <ShippingDeliveryMethodForm
-                    expandByDefault={index === 0}
-                    title={method.title}
-                    unitOfMeasure={method.unitOfMeasure}
-                    onUnitOfMeasureSelected={setUomForMethod(method.code)}
-                    shippingCosts={method.costs}
-                    onShippingCostsChanged={setCostsForMethod(method.code)}
-                    methodType={method.type}
-                  />
+            {isLoadingAppData ? (
+              <Layout cols={1} alignItems='center' justifyItems='center'>
+                <Cell>
+                  <Box width='100%' height='20vh' verticalAlign='middle'>
+                    <Loader size='large' />
+                  </Box>
                 </Cell>
-              ))}
-              <Cell>
-                <ActivationDetailsCard />
-              </Cell>
-            </Layout>
+              </Layout>
+            ) : (
+              <Layout>
+                {currentShippingAppData?.shippingMethods.map((method, index) => (
+                  <Cell key={method.code}>
+                    <ShippingDeliveryMethodForm
+                      expandByDefault={index === 0}
+                      title={method.title}
+                      unitOfMeasure={method.unitOfMeasure}
+                      onUnitOfMeasureSelected={setUomForMethod(method.code)}
+                      shippingCosts={method.costs}
+                      onShippingCostsChanged={setCostsForMethod(method.code)}
+                      methodType={method.type}
+                    />
+                  </Cell>
+                ))}
+                <Cell>
+                  <ActivationDetailsCard />
+                </Cell>
+              </Layout>
+            )}
           </Cell>
           <Cell span={4}>
             <Page.Sticky>
-              <ShippingMethodSummary orders={orders} />
+              <ShippingMethodSummary />
             </Page.Sticky>
           </Cell>
         </Layout>

@@ -16,8 +16,6 @@ export async function GET(request: NextRequest) {
 
   const baseUrl = request.nextUrl.href.split('/api/oauth/')[0];
 
-  console.log('Base path is: ', baseUrl);
-
   return redirect(
     `https://www.wix.com/installer/install?token=${token}&state=${JSON.stringify(
       stateObject,
