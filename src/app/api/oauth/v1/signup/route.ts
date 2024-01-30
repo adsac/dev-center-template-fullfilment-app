@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     body: JSON.stringify({
       grant_type: 'authorization_code',
       client_id: process.env.WIX_APP_ID,
-      client_secret: process.env.WIX_APP_SECRET_KEY,
+      client_secret: process.env.WIX_APP_SECRET,
       code,
     }),
   });

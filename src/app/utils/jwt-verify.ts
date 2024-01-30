@@ -16,11 +16,11 @@ const parseJwtKeyIfEncoded = (secretOrPublicKey: string): string => {
 };
 
 export const parseJwt = <T = any>(token: string, verifyCallerClaims = false): T | null => {
-  const secretKey = process.env.WIX_APP_JWT_KEY;
-  if (!token || !secretKey) {
+  const secretOrPublicKey = process.env.WIX_APP_JWT_KEY;
+  if (!token || !secretOrPublicKey) {
     throw new Error('parseJwt:Missing token or secret key');
   }
-  const result = jwt.verify(token, parseJwtKeyIfEncoded(secretKey), verifyOptions) as Jwt;
+  const result = jwt.verify(token, parseJwtKeyIfEncoded(secretOrPublicKey), verifyOptions) as Jwt;
   const payload = result.payload as JwtPayload;
   if (verifyCallerClaims && (payload.aud !== process.env.WIX_APP_ID || payload.iss !== 'wix.com')) {
     throw new Error('parseJwt:seems that the token is not from the right caller');
