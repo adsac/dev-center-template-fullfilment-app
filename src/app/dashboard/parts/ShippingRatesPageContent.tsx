@@ -63,7 +63,11 @@ export const ShippingRatesPageContent = ({}: {}) => {
   const ButtonsBar = useCallback(
     () => (
       <Box gap='SP2'>
-        <Button skin='inverted' onClick={() => setCurrentShippingAppData(persistedShippingAppData)}>
+        <Button
+          skin='standard'
+          priority='secondary'
+          onClick={() => setCurrentShippingAppData(persistedShippingAppData)}
+        >
           Cancel
         </Button>
         <Button onClick={onSave}>{loading ? <Loader size='tiny' /> : 'Save'}</Button>

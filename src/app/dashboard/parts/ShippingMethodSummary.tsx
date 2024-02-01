@@ -3,6 +3,7 @@ import { ArrowRight } from '@wix/wix-ui-icons-common';
 import { useSDK } from '@/app/utils/wix-sdk.client';
 import { WixPageId } from '@/app/utils/navigation.const';
 import { useOrders } from '@/app/client-hooks/orders';
+import React from 'react';
 
 const LOCALE = 'en-US';
 
@@ -20,7 +21,7 @@ export function ShippingMethodSummary() {
         <Box direction='vertical' paddingBottom='SP3'>
           {isLoading || orders?.length ? (
             (isLoading ? [null, null, null] : orders!).map((order, index) => (
-              <>
+              <React.Fragment key={index}>
                 {index > 0 && <Divider skin='light' />}
                 <Box key={index} verticalAlign='middle' align='space-between' paddingTop='SP2' paddingBottom='SP1'>
                   <Box direction='vertical'>
@@ -58,7 +59,7 @@ export function ShippingMethodSummary() {
                     )}
                   </Text>
                 </Box>
-              </>
+              </React.Fragment>
             ))
           ) : (
             <Text size='small' weight='thin'>
