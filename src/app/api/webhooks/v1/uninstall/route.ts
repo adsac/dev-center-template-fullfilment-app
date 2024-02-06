@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { wixAppClient } from '@/app/utils/wix-app-client';
+import { wixAppClient } from '@/app/utils/wix-sdk.app';
 
 export async function POST(request: NextRequest) {
   console.info('Webhook::uninstall - called');

@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@wix/sdk';
+import { createClient } from '@wix/sdk/client';
 import { headers } from 'next/headers';
 import { orders } from '@wix/ecom';
 // this should only be used in server components

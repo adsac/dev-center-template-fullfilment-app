@@ -1,7 +1,7 @@
 import { getShippingAppData } from '@/app/actions/app-data';
 import { GetShippingRatesData, GetShippingRatesResponse } from '@/app/types/shipping-provider-spi';
 import { calculatePrice } from '@/app/utils/shipping-calculator';
-import { wixAppClient } from '@/app/utils/wix-app-client';
+import { wixAppClient } from '@/app/utils/wix-sdk.app';
 import { SPIDefinition } from '@wix/sdk';
 
 export async function POST(request: Request) {

@@ -1,6 +1,6 @@
 import { type NextRequest } from 'next/server';
 import { redirect } from 'next/navigation';
-import { wixAppClient } from '@/app/utils/wix-app-client';
+import { wixAppClient } from '@/app/utils/wix-sdk.app';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

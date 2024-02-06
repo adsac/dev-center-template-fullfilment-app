@@ -1,7 +1,7 @@
 'use client';
 import { dashboard, SDK } from '@wix/dashboard';
 import { useMemo } from 'react';
-import { createClient } from '@wix/sdk';
+import { createClient } from '@wix/sdk/client';
 
 function inIframe() {
   try {

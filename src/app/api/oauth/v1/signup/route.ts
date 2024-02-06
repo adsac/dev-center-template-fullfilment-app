@@ -1,4 +1,4 @@
-import { wixAppClient } from '@/app/utils/wix-app-client';
+import { wixAppClient } from '@/app/utils/wix-sdk.app';
 import { redirect } from 'next/navigation';
 import { type NextRequest } from 'next/server';
 
