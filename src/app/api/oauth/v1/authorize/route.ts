@@ -1,5 +1,6 @@
 import { type NextRequest } from 'next/server';
 import { redirect } from 'next/navigation';
+import { wixAppClient } from '@/app/utils/wix-sdk.app';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -17,8 +18,10 @@ export async function GET(request: NextRequest) {
   const baseUrl = request.nextUrl.href.split('/api/oauth/')[0];
 
   return redirect(
-    `https://www.wix.com/installer/install?token=${token}&state=${JSON.stringify(
-      stateObject,
-    )}&redirectUrl=${`${baseUrl}/api/oauth/v1/signup`}&appId=${process.env.WIX_APP_ID}`,
+    wixAppClient.auth.getInstallUrl({
+      token,
+      state: stateObject,
+      redirectUrl: `${baseUrl}/api/oauth/v1/signup`,
+    }),
   );
 }

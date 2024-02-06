@@ -1,13 +1,17 @@
+import { wixAppClient } from '@/app/utils/wix-sdk.app';
 import { type NextRequest } from 'next/server';
-import { parseJwt } from '@/app/utils/jwt-verify';
 
 export async function POST(request: NextRequest) {
   console.info('Webhook::install - called');
-  const jwtPayload = await request.text();
+  const { eventType, instanceId, payload } = await wixAppClient.webhooks.processRequest(request, {
+    expectedEvents: [wixAppClient.webhooks.apps.AppInstalled],
+  });
 
-  // verify the data was not tampered with, and get the input
-  const input = parseJwt<any>(jwtPayload, false)!;
-  console.info('Webhook::install - input is', input);
+  console.info('Webhook::install - input is', {
+    eventType,
+    instanceId,
+    payload,
+  });
 
   return new Response('OK', {
     status: 200,
