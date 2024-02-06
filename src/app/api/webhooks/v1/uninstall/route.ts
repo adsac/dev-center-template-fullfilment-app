@@ -1,13 +1,17 @@
 import { NextRequest } from 'next/server';
-import { parseJwt } from '@/app/utils/jwt-verify';
+import { wixAppClient } from '@/app/utils/wix-app-client';
 
 export async function POST(request: NextRequest) {
   console.info('Webhook::uninstall - called');
-  const jwtPayload = await request.text();
+  const { eventType, instanceId, payload } = await wixAppClient.webhooks.processRequest(request, {
+    expectedEvents: [wixAppClient.webhooks.apps.AppRemoved],
+  });
 
-  // verify the data was not tampered with, and get the input
-  const input = parseJwt<any>(jwtPayload, false)!;
-  console.info('Webhook::uninstall - input is', input);
+  console.info('Webhook::uninstall - input is', {
+    eventType,
+    instanceId,
+    payload,
+  });
 
   return new Response('OK', {
     status: 200,
