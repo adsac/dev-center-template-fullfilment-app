@@ -5,7 +5,7 @@ import { wixAppClient } from '@/app/utils/wix-app-client';
 import { SPIDefinition } from '@wix/sdk';
 
 export async function POST(request: Request) {
-  console.info('Shipping rates::POST - called', await request.text());
+  console.info('Shipping rates::POST - called');
   const shippingRatesSPI = wixAppClient.spi<SPIDefinition<GetShippingRatesData, GetShippingRatesResponse>>();
 
   // verify the data was not tampered with, and get the input
